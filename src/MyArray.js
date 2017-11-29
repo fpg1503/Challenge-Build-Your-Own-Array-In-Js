@@ -286,7 +286,6 @@ MyArray.prototype.slice = function (start, end) {
 };
 
 MyArray.prototype.splice = function (start, deleteCount) {
-    console.log(`called, arguments: [${Array.from(arguments)}]`)
     if (start >= this.size) {
         return
     }
@@ -298,40 +297,31 @@ MyArray.prototype.splice = function (start, deleteCount) {
     const insertCount = Math.max(0, arguments.length - 2)
     this.size += insertCount - deleteCount 
     
+    const shouldCreateNew = this.elements.length < this.size
+    let array = shouldCreateNew ? new PlainArray(this.size * 2) : this.elements
+
     if (insertCount <= deleteCount) {
         //Unshift
         for (let i = start + insertCount; i < this.size; i++) {
-            this.elements.set(i, this.elements.get(i - insertCount + deleteCount))
-        }
-        //Insert
-        for (let i = start; i < start + insertCount; i++) {
-            this.elements.set(i, arguments[i - start + 2])
+            array.set(i, this.elements.get(i - insertCount + deleteCount))
         }
     } else {
-        if (this.elements.length >= this.size) {
-            //Shift
-            for (let i = this.size - 1; i >= start + insertCount; i--) {
-                this.elements.set(i, this.elements.get(i - (insertCount - deleteCount)))
-            }
-            //Insert new items
-            for (let i = start; i < start + insertCount; i++) {
-                this.elements.set(i, arguments[i - start + 2])
-            }
-        } else {
-            let newArray = new PlainArray(this.size * 2)
+        if (shouldCreateNew) {
             //Copy first items
             for (let i = 0; i < start; i++) {
-                newArray.set(i, this.elements.get(i))
+                array.set(i, this.elements.get(i))
             }
-            //Insert new items
-            for (let i = start; i < start + insertCount; i++) {
-                newArray.set(i, arguments[i - start + 2])
-            }
+        } else {
             //Shift
-            for (let i = start + insertCount; i < this.size; i++) {
-                newArray.set(i, this.elements.get(i - (insertCount - deleteCount)))
+            for (let i = this.size - 1; i >= start + insertCount; i--) {
+                array.set(i, this.elements.get(i - (insertCount - deleteCount)))
             }
-            this.elements = newArray
+            this.elements = array
         }
+    }
+
+    //Insert new items
+    for (let i = start; i < start + insertCount; i++) {
+        array.set(i, arguments[i - start + 2])
     }
 };
