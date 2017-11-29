@@ -4,10 +4,12 @@ class MyArray {
         this.size = 0
     }
 
+    //O(1)
     length() {
         return this.size
     }
 
+    //O(n) :- O(1) if array has enough size left
     push(value) {
         if (this.size + 1 > this.elements.length) {
             const newArray = new PlainArray(Math.max(this.size * 2, 3))
@@ -20,6 +22,7 @@ class MyArray {
         this.size += 1
     }
 
+    //O(1)
     get(index) {
         if (index < 0 || index >= this.size) {
             return undefined
@@ -27,6 +30,7 @@ class MyArray {
         return this.elements.get(index)
     }
 
+    //O(n) :- O(1) if array has enough size left
     set(index, value) {
         if (index > this.elements.length) {
             const newArray = new PlainArray(Math.max(index * 2, 3))
@@ -39,6 +43,7 @@ class MyArray {
         this.size = Math.max(this.size, index + 1)
     }
 
+    //O(n)
     static of(...items) {
         let array = new MyArray(items.length * 2)
         for (const item of items) {
@@ -47,6 +52,7 @@ class MyArray {
         return array
     }
 
+    //O(1)
     pop() {
         if (this.size === 0) {
             return undefined
@@ -57,6 +63,7 @@ class MyArray {
         return popped
     }
 
+    //O(n+m)
     concat(other) {
         if (!other || other.size === 0) {
             return this
@@ -75,6 +82,7 @@ class MyArray {
         return newArray
     }
 
+    //O(n)
     indexOf(element) {
         for (let i = 0; i < this.size; i++) {
             if (this.get(i) === element) {
@@ -84,6 +92,7 @@ class MyArray {
         return -1
     }
 
+    //O(n)
     lastIndexOf(element) {
         for (let i = this.size - 1; i >= 0; i--) {
             if (this.get(i) === element) {
@@ -93,6 +102,7 @@ class MyArray {
         return -1
     }
 
+    //O(n)
     includes(element) {
         for (let i = 0; i < this.size; i++) {
             if (this.get(i) === element) {
@@ -102,6 +112,7 @@ class MyArray {
         return false
     }
 
+    //O(fn(n))
     find(fn) {
         for (let i = 0; i < this.size; i++) {
             const element = this.get(i)
@@ -112,6 +123,7 @@ class MyArray {
         return undefined
     }
 
+    //O(fn(n))
     findIndex(fn) {
         for (let i = 0; i < this.size; i++) {
             if (fn(this.get(i))) {
@@ -121,6 +133,7 @@ class MyArray {
         return -1
     }
 
+    //O(n)
     equals(other) {
         if (this.size != other.size) {
             return false
@@ -133,12 +146,14 @@ class MyArray {
         return true
     }
 
+    //O(fn(n))
     forEach(fn) {
         for (let i = 0; i < this.size; i++) {
             fn(this.get(i), i)
         }
     }
 
+    //O(n)
     join(separator = ',') {
         let accumulator = ''
         for (let i = 0; i < this.size; i++) {
@@ -150,10 +165,12 @@ class MyArray {
         return accumulator
     }
 
+    //O(n)
     toString() {
         return this.join()
     }
 
+    //O(fn(n))
     map(fn) {
         const newArray = new MyArray(this.size * 2)
         for (let i = 0; i < this.size; i++) {
@@ -162,6 +179,7 @@ class MyArray {
         return newArray
     }
 
+    //O(fn(n))
     filter(fn) {
         const newArray = new MyArray(this.size * 2)
         for (let i = 0; i < this.size; i++) {
@@ -173,6 +191,7 @@ class MyArray {
         return newArray
     }
 
+    //O(fn(n))
     some(fn) {
         for (let i = 0; i < this.size; i++) {
             const element = this.get(i)
@@ -183,6 +202,7 @@ class MyArray {
         return false
     }
 
+    //O(fn(n))
     every(fn) {
         for (let i = 0; i < this.size; i++) {
             const element = this.get(i)
@@ -193,12 +213,14 @@ class MyArray {
         return true
     }
 
+    //O(n)
     fill(value, start = 0, end = this.size) {
         for (let i = start; i < end; i++) {
             this.set(i, value)
         }
     }
 
+    //O(n)
     reverse() {
         for (let i = 0; i < this.size / 2; i++) {
             const complementIndex = this.size - i - 1
@@ -208,6 +230,7 @@ class MyArray {
         }
     }
 
+    //O(n)
     shift() {
         if (this.size == 0) {
             return undefined
@@ -220,6 +243,7 @@ class MyArray {
         return shifted
     }
 
+    //O(n)
     unshift(element) {
         for (let i = this.size; i > 0; i--) {
             this.set(i, this.get(i - 1))
@@ -227,6 +251,7 @@ class MyArray {
         this.set(0, element)
     }
 
+    //O(n)
     slice(start = 0, end = this.size) {
         const newSize = (end - start) * 2
         let newArray = new MyArray(newSize)
@@ -236,6 +261,7 @@ class MyArray {
         return newArray
     }
 
+    //O(n)
     splice(start, deleteCount = this.size - start, ...newItems) {
         const insertCount = newItems.length || 0
         this.size += insertCount - deleteCount
