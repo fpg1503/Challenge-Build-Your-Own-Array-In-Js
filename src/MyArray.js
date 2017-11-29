@@ -1,8 +1,4 @@
-function MyArray(initialCapacity) {
-    if (initialCapacity === undefined) {
-        initialCapacity = 3;
-    }
-
+function MyArray(initialCapacity = 3) {
     this.elements = new PlainArray(initialCapacity);
     this.size = 0;
 }
@@ -42,10 +38,10 @@ MyArray.prototype.set = function (index, value) {
     this.size = Math.max(this.size, index + 1)
 };
 
-MyArray.of = function () {
-    let array = new MyArray(arguments.length * 2)
-    for (argument of arguments) {
-        array.push(argument)
+MyArray.of = function (...items) {
+    let array = new MyArray(items.length * 2)
+    for (item of items) {
+        array.push(item)
     }
     return array
 };
@@ -157,11 +153,7 @@ MyArray.prototype.forEach = function (fn) {
     }
 };
 
-MyArray.prototype.join = function (separator) {
-    if (separator === undefined) {
-        separator = ','
-    }
-
+MyArray.prototype.join = function (separator = ',') {
     let accumulator = ''
     for (let i = 0; i < this.size; i++) {
         accumulator += this.get(i)
@@ -221,15 +213,7 @@ MyArray.prototype.every = function (fn) {
     return true
 };
 
-MyArray.prototype.fill = function (value, start, end) {
-    if (start === undefined) {
-        start = 0
-    }
-
-    if (end === undefined) {
-        end = this.size
-    }
-
+MyArray.prototype.fill = function (value, start = 0, end = this.size) {
     for (let i = start; i < end; i++) {
         this.set(i, value)
     }
@@ -267,15 +251,7 @@ MyArray.prototype.unshift = function (element) {
     this.set(0, element)
 };
 
-MyArray.prototype.slice = function (start, end) {
-    if (start === undefined) {
-        start = 0
-    }
-
-    if (end === undefined) {
-        end = this.size
-    }
-
+MyArray.prototype.slice = function (start = 0, end = this.size) {
     const newSize = (end - start) * 2
     let newArray = new MyArray(newSize)
     for (let i = 0; i < end - start; i++) {
@@ -285,16 +261,8 @@ MyArray.prototype.slice = function (start, end) {
     return newArray
 };
 
-MyArray.prototype.splice = function (start, deleteCount) {
-    if (start >= this.size) {
-        return
-    }
-
-    if (deleteCount === undefined) {
-        deleteCount = this.size - start
-    }
-
-    const insertCount = Math.max(0, arguments.length - 2)
+MyArray.prototype.splice = function (start, deleteCount = this.size - start, ...newItems) {
+    const insertCount = newItems.length || 0
     this.size += insertCount - deleteCount 
     
     const shouldCreateNew = this.elements.length < this.size
@@ -322,6 +290,6 @@ MyArray.prototype.splice = function (start, deleteCount) {
 
     //Insert new items
     for (let i = start; i < start + insertCount; i++) {
-        array.set(i, arguments[i - start + 2])
+        array.set(i, newItems[i - start])
     }
 };
