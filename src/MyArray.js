@@ -72,9 +72,21 @@ class MyArray {
             return other
         }
         const newSize = (this.size + other.size) * 2
-        let newArray = new MyArray(newSize)
-        for (let i = 0; i < this.size; i++) {
-            newArray.set(i, this.get(i))
+        let shouldRewriteBeginning = true
+        let newArray = (() => {
+            if (this.elements.length >= newSize) {
+                shouldRewriteBeginning = false
+                return this
+            } else if (other.elements.length >= newSize) {
+                return other
+            } else {
+                return new MyArray(newSize)
+            }
+        })()
+        if (shouldRewriteBeginning) {
+            for (let i = 0; i < this.size; i++) {
+                newArray.set(i, this.get(i))
+            }
         }
         for (let i = 0; i < other.size; i++) {
             newArray.set(i + this.size, other.get(i))
